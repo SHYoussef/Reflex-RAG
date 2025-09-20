@@ -1,0 +1,28 @@
+repos:
+  # -------------------
+  # Black (formatter)
+  # -------------------
+  - repo: https://github.com/psf/black
+    rev: 24.8.0   # check latest stable version
+    hooks:
+      - id: black
+        language_version: python3.12
+
+  # -------------------
+  # Ruff (format + lint)
+  # -------------------
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.8   # check latest stable version
+    hooks:
+      - id: ruff
+        args: [--fix]  # auto-fix formatting issues
+      - id: ruff-format  # optional: enforce Ruff’s formatter instead of Black
+
+  # -------------------
+  # Mypy (type checker)
+  # -------------------
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.11.2  # check latest stable version
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-requests, types-PyYAML]  # add type stubs you use
