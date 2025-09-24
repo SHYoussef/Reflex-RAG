@@ -4,7 +4,7 @@ from typing_extensions import TypedDict
 
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
-
+from abc import abstractmethod
 
 class State(TypedDict):
     # Messages have the type "list". The `add_messages` function
@@ -14,10 +14,10 @@ class State(TypedDict):
 
 
 class IAgent:
-    def __init__(self, State: State):
-        self.graph = StateGraph(State)
-    
-    def _add_nodes(self) -> None:
+    @abstractmethod
+    def __init__(self, graph: StateGraph):
         pass
     
-  
+    @abstractmethod
+    def generate_answer(self) -> None:
+        pass
