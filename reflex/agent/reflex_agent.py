@@ -1,7 +1,7 @@
 from langgraph.graph import StateGraph, START, END
-from reflex.graph.interfaces.agent import IAgent
-from reflex.graph.interfaces.node import INodes
-from reflex.graph.nodes import ReflexNodes
+from reflex.agent.interfaces.agent import IAgent
+from reflex.agent.interfaces.node import INodes
+from reflex.agent.nodes import ReflexNodes
 
 from reflex.schema.states import MessageState, ClassifierState
 from typing import Literal

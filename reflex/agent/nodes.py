@@ -1,7 +1,7 @@
 from reflex.schema.states import MessageState, ClassifierState
 from typing import Literal
 from logging import Logger
-from reflex.graph.interfaces.node import INodes
+from reflex.agent.interfaces.node import INodes
 
 
 class ReflexNodes(INodes):

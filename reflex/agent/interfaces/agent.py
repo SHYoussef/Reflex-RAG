@@ -4,7 +4,7 @@ from typing_extensions import TypedDict
 
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 class State(TypedDict):
     # Messages have the type "list". The `add_messages` function
@@ -13,11 +13,8 @@ class State(TypedDict):
     messages: Annotated[list, add_messages]
 
 
-class IAgent:
+class IAgent(ABC):
+
     @abstractmethod
-    def __init__(self, graph: StateGraph):
-        pass
-    
-    @abstractmethod
-    def generate_answer(self) -> None:
+    def generate_answer(self, question: str) -> str:
         pass
