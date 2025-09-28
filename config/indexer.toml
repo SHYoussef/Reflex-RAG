@@ -1,0 +1,9 @@
+[index]
+index_name="reflex-index"
+model="llama-text-embed-v2"
+region="us-east-1"
+
+[preprocessor]
+chunk_size=1000
+chunk_overlap=200
+folder_path="./data"

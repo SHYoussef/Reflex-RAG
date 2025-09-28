@@ -5,10 +5,12 @@ from pydantic_settings import (
     SettingsConfigDict,
     TomlConfigSettingsSource,
 )
+from pathlib import Path
+from loguru import logger
 
 class Settings(BaseSettings):
-    toml_file: str = None  # field to hold the path
-
+    
+    toml_file: str
     @classmethod
     def settings_customise_sources(
         cls,
@@ -18,35 +20,51 @@ class Settings(BaseSettings):
         dotenv_settings: PydanticBaseSettingsSource,
         file_secret_settings: PydanticBaseSettingsSource,
     ) -> tuple[PydanticBaseSettingsSource, ...]:
-        # Use the toml_file attribute if provided, else default
-        toml_path = getattr(settings_cls, "toml_file", None)
-        if toml_path:
-            toml_source = TomlConfigSettingsSource(settings_cls, toml_file=toml_path)
-        else:
-            toml_source = TomlConfigSettingsSource(settings_cls)
+        toml_settings = TomlConfigSettingsSource(settings_cls, toml_file=init_settings().get("toml_file"))
         return (
             init_settings,
             env_settings,
             dotenv_settings,
-            toml_source,
+            toml_settings,
         )
 
 class AgentConfig(Settings):
     pass
 
 
-class IndexConfig(Settings):
-    chunk_size: int
-    chunk_overlap: int
-    folder_path: str
+class IndexConfig(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file='.env',
+        env_file_encoding='utf-8',
+        case_sensitive=False,
+        extra='ignore'
+    )
     index_name: str
     pinecone_api_key: str
     region: str
     model: str
 
 
-def get_index_config(toml_file: str = "./config/index.toml") -> IndexConfig:
-    return IndexConfig(toml_file=toml_file)
+class PreprocessorConfig(BaseModel):
+    chunk_size: int
+    chunk_overlap: int
+    folder_path: str  
 
-def get_reflex_config(toml_file: str = "./config/agent.toml") -> AgentConfig:
-    return AgentConfig(toml_file=toml_file)
+class IndexerConfig(Settings):
+
+    preprocessor: PreprocessorConfig
+    index: IndexConfig
+
+
+
+def get_indexer_config(toml_file: str = "config/indexer.toml") -> IndexerConfig:
+    """Load indexer configuration from TOML file."""
+
+    config = IndexerConfig(toml_file= toml_file)
+    logger.info(f"Successfully loaded indexer configuration")
+    return config
+
+def get_agent_config(toml_file: str = "./config/agent.toml") -> AgentConfig:
+    config = AgentConfig(toml_file=toml_file)
+    logger.info(f"Successfully loaded agent configuration")
+    return config

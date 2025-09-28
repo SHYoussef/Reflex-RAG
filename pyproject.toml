@@ -13,8 +13,10 @@ dependencies = [
     "langchain-openai>=0.3.33",
     "langchain-text-splitters>=0.3.11",
     "langgraph>=0.4.8",
+    "loguru>=0.7.3",
     "pinecone>=7.3.0",
     "pydantic>=2.11.7",
+    "pypdf>=6.1.1",
     "uvicorn>=0.37.0",
 ]
 

@@ -1,6 +1,6 @@
 
-from langchain_text_splitters import RecursiveCharacterTextSplitter, TextSplitter
-from langchain import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.documents.base import Document
 from langchain_community.document_loaders import PyPDFLoader
 import os
 from pathlib import Path
