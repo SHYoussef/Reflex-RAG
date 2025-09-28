@@ -6,8 +6,7 @@ from reflex.agent.nodes import ReflexNodes
 from reflex.schema.states import MessageState, ClassifierState
 from typing import Literal
 
-from logging import Logger
-
+import logging
 
 
 class ReflexAgent(IAgent):
@@ -39,7 +38,7 @@ class ReflexAgent(IAgent):
         elif state["classification"] =="answer":
             return "answer_without_sources"
         else:
-            Logger.warning("incorrect classification has been made")
+            logging.warning("incorrect classification has been made")
             raise(ValueError("INCORRECT CLASSIFICATION"))
 
     def _add_edges(self) -> None:

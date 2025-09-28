@@ -7,7 +7,7 @@ from pydantic_settings import (
 )
 
 class Settings(BaseSettings):
-    toml_file: str = None  # Add this field to hold the path
+    toml_file: str = None  # field to hold the path
 
     @classmethod
     def settings_customise_sources(
@@ -31,7 +31,7 @@ class Settings(BaseSettings):
             toml_source,
         )
 
-class ReflexConfig(Settings):
+class AgentConfig(Settings):
     pass
 
 
@@ -39,3 +39,14 @@ class IndexConfig(Settings):
     chunk_size: int
     chunk_overlap: int
     folder_path: str
+    index_name: str
+    pinecone_api_key: str
+    region: str
+    model: str
+
+
+def get_index_config(toml_file: str = "./config/index.toml") -> IndexConfig:
+    return IndexConfig(toml_file=toml_file)
+
+def get_reflex_config(toml_file: str = "./config/agent.toml") -> AgentConfig:
+    return AgentConfig(toml_file=toml_file)

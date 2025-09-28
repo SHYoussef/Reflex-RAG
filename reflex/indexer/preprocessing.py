@@ -47,7 +47,7 @@ class DocsPreprocessor:
     """
     Orchestrates loading and splitting of documents for downstream processing.
     """
-    def __init__(self, chunk_size: int, chunk_overlap: int, folder_path: str,
+    def __init__(self, folder_path: str,
                  loader: Loader, splitter: DocumentSplitter) -> None:
         self.folder_path = folder_path
         self.loader = loader 
