@@ -2,13 +2,14 @@ from typing import Annotated, Literal
 
 from typing_extensions import TypedDict
 from langgraph.graph.message import add_messages
+from langchain_openai import ChatOpenAI
+from langchain_core.tools.simple import Tool
 
 class MessageState(TypedDict):
     # Messages have the type "list". The `add_messages` function
     # in the annotation defines how this state key should be updated
     # (in this case, it appends messages to the list, rather than overwriting them)
     messages: Annotated[list, add_messages]
-
-class ClassifierState(MessageState):
-    # Classification 
-    classification: Literal["answer", "retrieve"]
+    chat_model: ChatOpenAI
+    retrieve_tool: Tool
+    generate_prompt: str

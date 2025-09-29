@@ -28,9 +28,38 @@ class Settings(BaseSettings):
             toml_settings,
         )
 
-class AgentConfig(Settings):
-    pass
+class RetrieverConfig(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file='.env',
+        env_file_encoding='utf-8',
+        case_sensitive=False,
+        extra='ignore'
+    )
+    index_name: str
+    top_k: int
+    pinecone_api_key: str
 
+class GenerationConfig(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file='.env',
+        env_file_encoding='utf-8',
+        case_sensitive=False,
+        extra='ignore'
+    )
+    model_name: str
+    decide_prompt: str
+    generate_prompt: str
+    temperature: int
+    openai_api_key: str
+
+
+class ChainlitConfig(BaseModel):
+    welcome_message: str 
+
+class AgentConfig(Settings):
+    retriever: RetrieverConfig
+    generate: GenerationConfig
+    chainlit: ChainlitConfig
 
 class IndexConfig(BaseSettings):
     model_config = SettingsConfigDict(

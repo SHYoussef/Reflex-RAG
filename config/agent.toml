@@ -1,0 +1,24 @@
+[retriever]
+index_name = "reflex-index"
+top_k=3
+
+[generate]
+model_name="gpt-4o"
+generate_prompt = """
+You are an assistant for question-answering tasks. \
+Use the following pieces of retrieved context to answer the question. \
+If you don't know the answer, just say that you don't know. \
+Use three sentences maximum and keep the answer concise.
+Question: {question} 
+Context: {context}
+"""
+decide_prompt = """
+You are an agent designed to determine whether you have enough information to answer a question based on retrieved context. \
+Unless you are almost certainly sure of the answer to the question or the query is a statement rather than a direct question, \
+you should use the retrieve tool to gather more information. \    
+"""
+
+temperature=0
+
+[chainlit]
+welcome_message = "👋 Welcome to reflex rag, you could ask any question related to the documents you have uploaded."
