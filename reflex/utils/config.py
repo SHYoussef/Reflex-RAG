@@ -38,6 +38,8 @@ class RetrieverConfig(BaseSettings):
     index_name: str
     top_k: int
     pinecone_api_key: str
+    top_n: int
+    rerank_model: str
 
 class GenerationConfig(BaseSettings):
     model_config = SettingsConfigDict(

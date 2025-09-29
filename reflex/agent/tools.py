@@ -10,18 +10,22 @@ class PineconeRetriever(BaseRetriever):
     top_k: int
     pinecone_api_key: str
     index_name: str
+    rerank_model: str
+    top_n: int
     fields: List[str] = ["chunk_text"]
     namespace: str = "reflex-test"
     name: str = "PineconeRetriever"
     description: str = "Use this tool to answer questions about the documents in the Pinecone index."
     pc: Any = None
     
-    def __init__(self, top_k: int, pinecone_api_key: str, index_name: str) -> None:
+    def __init__(self, top_k: int, pinecone_api_key: str, index_name: str, rerank_model:str, top_n: int) -> None:
         # Call super().__init__() first with the fields
         super().__init__(
             top_k=top_k,
             pinecone_api_key=pinecone_api_key,
-            index_name=index_name
+            index_name=index_name,
+            rerank_model= rerank_model,
+            top_n=top_n,
         )
         self._init_client()
 
@@ -41,6 +45,11 @@ class PineconeRetriever(BaseRetriever):
         query = {
             "inputs": {"text": question},
             "top_k": self.top_k,
+        }
+        rerank = {
+            "model": self.rerank_model,
+            "top_n": self.top_n,
+
         }
 
         fields = self.fields
