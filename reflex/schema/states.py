@@ -13,3 +13,4 @@ class MessageState(TypedDict):
     chat_model: ChatOpenAI
     retrieve_tool: Tool
     generate_prompt: str
+    decide_prompt: str
