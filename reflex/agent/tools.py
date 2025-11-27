@@ -17,6 +17,7 @@ class PineconeRetriever(BaseRetriever):
     name: str = "PineconeRetriever"
     description: str = "Use this tool to answer questions about the documents in the Pinecone index."
     pc: Any = None
+    index_host_name: str = ""
     
     def __init__(self, top_k: int, pinecone_api_key: str, index_name: str, rerank_model:str, top_n: int) -> None:
         # Call super().__init__() first with the fields
@@ -28,6 +29,7 @@ class PineconeRetriever(BaseRetriever):
             top_n=top_n,
         )
         self._init_client()
+        self._get_index_host_name()
 
     def _init_client(self) -> None:
         self.pc = Pinecone(api_key=self.pinecone_api_key)
@@ -36,10 +38,10 @@ class PineconeRetriever(BaseRetriever):
 
     def _get_index_host_name(self) -> str:
         index_infos = self.pc.describe_index(self.index_name)
-        return index_infos["host"]
+        self.index_host_name = index_infos["host"]
 
     def _get_index(self) -> Pinecone.Index:
-        return self.pc.Index(host=self._get_index_host_name())
+        return self.pc.Index(host=self.index_host_name)
 
     def get_relevant_documents(self, question: str) -> list[Document]:
         query = {

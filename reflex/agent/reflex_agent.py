@@ -38,6 +38,7 @@ class ReflexAgent(IAgent):
             "chat_model": self.chat_model,
             "retrieve_tool": self._create_tool_for_retrieve(),
             "generate_prompt": self.nodes.generate_prompt,
+            "decide_prompt": self.nodes.decide_prompt,
         }
         response = self.graph.invoke(init_state)
         return response["messages"][-1].content

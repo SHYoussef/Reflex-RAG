@@ -10,11 +10,12 @@ class ReflexNodes(INodes):
         self.decide_prompt = decide_prompt
         super().__init__()
 
-    def generate_query_or_respond(self, state: MessageState):
+    @staticmethod
+    def generate_query_or_respond(state: MessageState):
         """Decide whether to generate a query or respond directly."""
         # Create a messages list with the decide prompt as system message
         messages_with_prompt = [
-            {"role": "system", "content": self.decide_prompt},
+            {"role": "system", "content": state["decide_prompt"]},
             *state["messages"]
         ]
         
