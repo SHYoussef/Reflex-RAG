@@ -15,6 +15,31 @@ This template serves as a starting point for projects that require:
 - Generation of responses based on retrieved information
 - Semantic search capabilities
 
+### Project Structure
+
+Below is the top-level project layout. Paths are relative to the repository root:
+
+```
+cl_entrypoint.py
+indexing.py
+main.py
+pyproject.toml
+README.md
+config/
+	agent.toml
+	indexer.toml
+data/
+images/
+reflex/
+	agent/
+	api/
+	indexer/
+	schema/
+	utils/
+```
+
+Place your PDFs inside the `data/` folder before running the indexer.
+
 ### Installation
 
 Install the UV package manager and sync dependencies:
