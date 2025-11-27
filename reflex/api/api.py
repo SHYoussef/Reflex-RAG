@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from pydantic import BaseModel
 from reflex.agent.interfaces.agent import IAgent
 
@@ -17,3 +17,6 @@ class FastAPIendpoint:
         def generate_response(request: QuestionRequest):
             answer = self.agent.generate_answer(request.question)
             return {"answer": answer}
+        @self.app.get("/health")
+        def healthcheck():
+            return Response(status_code=200)
