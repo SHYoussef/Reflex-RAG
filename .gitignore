@@ -3,4 +3,3 @@ __pycache__
 .chainlit
 .env
 data/*
-*.png
