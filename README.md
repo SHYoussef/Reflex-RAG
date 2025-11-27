@@ -29,10 +29,6 @@ Start the application using uvicorn:
 uvicorn main:fastapi_app
 ```
 
-```bash
-chainlit run main:app
-```
-
 ### Interface
 
 The application uses [Chainlit](https://chainlit.io/) for the conversational interface. The Chainlit application is available at the `/interface` route.
