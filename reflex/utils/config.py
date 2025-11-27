@@ -5,7 +5,6 @@ from pydantic_settings import (
     SettingsConfigDict,
     TomlConfigSettingsSource,
 )
-from pathlib import Path
 from loguru import logger
 
 class Settings(BaseSettings):
