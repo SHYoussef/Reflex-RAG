@@ -16,15 +16,16 @@ from loguru import logger
 
 
 class ReflexAgent(IAgent):
-    def __init__(self, nodes: ReflexNodes, retriever: BaseRetriever, openai_api_key: str, temperature:int, model_name:str, State = MessageState)-> None:
+    def __init__(self, retriever: BaseRetriever, generate_prompt: str, decide_prompt:str, openai_api_key: str, temperature:int, model_name:str, State = MessageState)-> None:
         self.graph_builder = StateGraph(State)
-        self.nodes = nodes
+        self.generate_prompt = generate_prompt
+        self.decide_prompt = decide_prompt
         self.temperature = temperature
         self.openai_api_key = openai_api_key
         self.model_name = model_name
         self.chat_model = self._init_openai_chat_model()
         self.retriever = retriever
-        self._add_nodes(self.nodes)
+        self._add_nodes()
         self._add_edges()
         self.graph = self._build_graph()
         
@@ -35,21 +36,17 @@ class ReflexAgent(IAgent):
     def generate_answer(self, question: str) -> str:
         init_state = {
             "messages": [{"role": "user", "content": question}],
-            "chat_model": self.chat_model,
-            "retrieve_tool": self._create_tool_for_retrieve(),
-            "generate_prompt": self.nodes.generate_prompt,
-            "decide_prompt": self.nodes.decide_prompt,
         }
         response = self.graph.invoke(init_state)
         return response["messages"][-1].content
 
-    def _add_nodes(self, nodes: INodes) -> None:
-
-        for func_name in nodes.all_methods:
-            bound_func = getattr(nodes, func_name)
-            self.graph_builder.add_node(func_name, bound_func)
-        # tool node for retrieval
+    # Agent building methods
+    def _add_nodes(self) -> None:
+        self.graph_builder.add_node("generate_query_or_respond", self.generate_query_or_respond)
+        self.graph_builder.add_node("respond", self.respond)
         self.graph_builder.add_node("retrieve", ToolNode([self._create_tool_for_retrieve()]))
+
+
         logger.info("successfully added nodes to the graph")
 
     def _add_edges(self) -> None:
@@ -63,13 +60,39 @@ class ReflexAgent(IAgent):
                 END: END,
             },
         )
-        self.graph_builder.add_edge("retrieve", "generate_answer")
-        self.graph_builder.add_edge("generate_answer", END)
+        self.graph_builder.add_edge("retrieve", "respond")
+        self.graph_builder.add_edge("respond", END)
         logger.info("successfully added edges to the graph")
 
     def _build_graph(self)-> None:
         return self.graph_builder.compile()
-    
+
+    ## Nodes
+    def generate_query_or_respond(self, state: MessageState):
+        """Decide whether to generate a query or respond directly."""
+        # Create a messages list with the decide prompt as system message
+        messages_with_prompt = [
+            {"role": "system", "content": self.decide_prompt},
+            *state["messages"]
+        ]
+        
+        response = (
+            self.chat_model
+            .bind_tools([self._create_tool_for_retrieve()])
+            .invoke(messages_with_prompt)
+        )
+        logger.info(f"Decided to {'use tools' if response.additional_kwargs.get('tool_calls') else 'respond directly'}")
+        return {"messages": [response]}
+
+    def respond(self, state: MessageState):
+        """Generate an answer."""
+        question = state["messages"][0].content
+        context = state["messages"][-1].content
+        prompt = self.generate_prompt.format(question=question, context=context)
+        response = self.chat_model.invoke([{"role": "user", "content": prompt}])
+        return {"messages": [response]}
+
+    ## Retriever Tool
     def _create_tool_for_retrieve(self)-> Tool:
         retriever_tool = create_retriever_tool(
             self.retriever,
@@ -77,3 +100,7 @@ class ReflexAgent(IAgent):
             self.retriever.description,
         )
         return retriever_tool
+    
+
+
+    

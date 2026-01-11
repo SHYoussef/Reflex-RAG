@@ -1,5 +1,4 @@
 from reflex.agent.reflex_agent import ReflexAgent
-from reflex.agent.nodes import ReflexNodes
 from reflex.agent.tools import PineconeRetriever
 from reflex.utils.config import get_agent_config
 
@@ -9,14 +8,13 @@ import chainlit as cl
 
 config = get_agent_config()
 
-nodes_cl = ReflexNodes(generate_prompt=config.generate.generate_prompt, decide_prompt=config.generate.decide_prompt)
 retriever_cl = PineconeRetriever(
     top_k=config.retriever.top_k,
     pinecone_api_key=config.retriever.pinecone_api_key,
     index_name=config.retriever.index_name,
     rerank_model=config.retriever.rerank_model,
     top_n=config.retriever.top_n)
-agent_cl = ReflexAgent(nodes=nodes_cl, retriever = retriever_cl, openai_api_key=config.generate.openai_api_key, temperature=config.generate.temperature, model_name=config.generate.model_name)
+agent_cl = ReflexAgent(retriever = retriever_cl, generate_prompt=config.generate.generate_prompt, decide_prompt=config.generate.decide_prompt, openai_api_key=config.generate.openai_api_key, temperature=config.generate.temperature, model_name=config.generate.model_name)
  
 
 @cl.on_chat_start
